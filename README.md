@@ -25,14 +25,12 @@ This project builds a **complete end-to-end NLP pipeline** to extract three enti
 
 ## 🎯 Demo
 
-![Gradio Demo](assets/demo_screenshot.png)
-
 > Type any clinical note → entities are highlighted in colour instantly.
 
 Run the Gradio interface locally:
 ```bash
-# After running the notebook, the last cell launches:
-demo.launch(share=True)  # generates a public link
+# The last cell of the notebook launches the interface:
+demo.launch(share=True)  # generates a public link valid for 72 hours
 ```
 
 ---
@@ -75,8 +73,6 @@ clinical-ner-bilstm-crf/
 ├── Clinical_NER_NLP_Project.ipynb   # Main notebook (all sections)
 ├── clinical_ner_model.pt            # Saved model weights
 ├── requirements.txt                 # Dependencies
-├── assets/
-│   └── demo_screenshot.png          # Gradio interface screenshot
 └── README.md
 ```
 
@@ -86,7 +82,7 @@ clinical-ner-bilstm-crf/
 
 ### 1. Clone the repo
 ```bash
-git clone https://github.com/YOUR_USERNAME/clinical-ner-bilstm-crf.git
+git clone https://github.com/NayanaReddyK/clinical-ner-bilstm-crf.git
 cd clinical-ner-bilstm-crf
 ```
 
@@ -106,6 +102,8 @@ The last cell in the notebook launches the interactive interface automatically.
 
 ## 📦 Requirements
 
+Create a `requirements.txt` with the following:
+
 ```
 torch>=2.0
 pytorch-crf
@@ -119,7 +117,7 @@ seaborn
 wordcloud
 ```
 
-Or install all at once:
+Install all at once:
 ```bash
 pip install torch pytorch-crf nltk spacy seqeval gradio scikit-learn matplotlib seaborn wordcloud
 ```
@@ -130,30 +128,36 @@ pip install torch pytorch-crf nltk spacy seqeval gradio scikit-learn matplotlib 
 
 Evaluated using **seqeval** entity-level F1 (span-based — not inflated token accuracy):
 
-| Entity | Precision | Recall | F1 |
-|---|---|---|---|
-| DISEASE | — | — | — |
-| DRUG | — | — | — |
-| DOSAGE | — | — | — |
+| Entity | Precision | Recall | F1 | Support |
+|---|---|---|---|---|
+| DISEASE | 0.31 | 0.33 | 0.32 | 12 |
+| DOSAGE | 0.69 | 0.69 | 0.69 | 13 |
+| DRUG | 0.77 | 0.77 | 0.77 | 13 |
+| **Overall (micro avg)** | **0.59** | **0.61** | **0.60** | **38** |
 
-> ⚠️ Fill in your actual scores after running. Results are on a synthetic 80-sentence dataset — see Future Work for the path to production accuracy.
+**Why these scores make sense:**
+- **DRUG (0.77)** is highest — drug names like `metformin`, `aspirin` are distinctive single tokens the model learns easily
+- **DOSAGE (0.69)** is middle — dosage patterns are predictable but multi-token spans like `20 units SC at bedtime` are harder
+- **DISEASE (0.32)** is lowest — disease spans are longer, more variable (*type 2 diabetes*, *community acquired pneumonia*) and contextually ambiguous; expected on a small dataset
+
+> ⚠️ This is a proof-of-concept trained on 80 synthetic sentences. For production-grade accuracy, see Future Work below.
 
 ---
 
 ## 🔭 Future Work
 
-1. **ClinicalBERT / BioBERT fine-tuning** — Replace trained embeddings with `dmis-lab/biobert-v1.1` for significantly higher F1 on real clinical text
-2. **Larger datasets** — Fine-tune on [i2b2 2010](https://www.i2b2.org) or [BC5CDR](https://huggingface.co/datasets/bigbio/bc5cdr) (freely available)
+1. **ClinicalBERT / BioBERT fine-tuning** — Replace trained embeddings with `dmis-lab/biobert-v1.1` for F1 ~0.87 on real clinical benchmarks
+2. **Larger real datasets** — Fine-tune on [i2b2 2010](https://www.i2b2.org) or [BC5CDR](https://huggingface.co/datasets/bigbio/bc5cdr)
 3. **More entity types** — `SYMPTOM`, `PROCEDURE`, `LAB VALUE`, `BODY PART`
 4. **Relation extraction** — Identify *drug treats disease*, *drug causes adverse effect* pairs
-5. **Negation detection** — Handle *"no signs of pneumonia"* vs *"pneumonia"*
-6. **API deployment** — Wrap as a FastAPI microservice to integrate with EHR systems
+5. **Negation detection** — Handle *"no signs of pneumonia"* correctly
+6. **API deployment** — Wrap as a FastAPI microservice for EHR system integration
 
 ---
 
 ## 🏢 Real-World Applications
 
-- Auto-populate structured EHR fields from free-text notes
+- Auto-populate structured EHR fields from free-text clinical notes
 - ICD-10 coding automation for insurance claims processing
 - Adverse drug reaction mining from clinical narratives
 - Clinical trial cohort identification
@@ -162,8 +166,8 @@ Evaluated using **seqeval** entity-level F1 (span-based — not inflated token a
 
 ## 👤 Author
 
-**Your Name**  
-[LinkedIn](https://linkedin.com/in/yourprofile) · [GitHub](https://github.com/yourusername)
+**Nayana Reddy**
+[![GitHub](https://img.shields.io/badge/GitHub-NayanaReddyK-black?logo=github)](https://github.com/NayanaReddyK)
 
 ---
 
